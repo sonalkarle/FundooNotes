@@ -1,0 +1,42 @@
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.deps.json
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.pdb
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\CommanLayer.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.pdb
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\CommanLayer.pdb
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csprojAssemblyReference.cache
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.AssemblyInfo.cs
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csproj.CopyComplete
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.pdb
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csprojAssemblyReference.cache
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.AssemblyInfoInputs.cache
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.AssemblyInfo.cs
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csproj.CoreCompileInputs.cache
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.pdb
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.deps.json
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.dll
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.pdb
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\CommanLayer.dll
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.dll
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.pdb
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\CommanLayer.pdb
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csproj.CopyComplete
+C:\Users\Himansu\Downloads\Fundoos_Application\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.dll
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.deps.json
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.dll
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\BusinessLayer.pdb
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\CommanLayer.dll
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.dll
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.pdb
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\bin\Debug\netcoreapp3.1\CommanLayer.pdb
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csprojAssemblyReference.cache
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.AssemblyInfo.cs
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.csproj.CopyComplete
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.dll
+C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\BusinessLayer\obj\Debug\netcoreapp3.1\BusinessLayer.pdb
