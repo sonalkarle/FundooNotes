@@ -35,10 +35,10 @@ namespace Fundoos_Application
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<IUserBL, UserBL>();
-            services.AddTransient<IUserRL, UserRL>();
-            services.AddTransient<INotesBL, NotesBL>();
-            services.AddTransient<INotesRL, NotesRL>();
+            services.AddScoped<IUserRL, UserRL>();
+            services.AddScoped<IUserBL, UserBL>();
+            services.AddScoped<INotesRL, NotesRL>();
+            services.AddScoped<INotesBL, NotesBL>();
             // Enable Swagger   
             services.AddSwaggerGen(swagger =>
             {
@@ -46,7 +46,7 @@ namespace Fundoos_Application
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "JWT Token Authentication API",
+                    Title = "FundooNotes",
                     Description = "ASP.NET Core 3.1 Web API"
                 });
                 // To Enable authorization using Swagger (JWT)  
@@ -75,7 +75,7 @@ namespace Fundoos_Application
                     }
                 });
             });
-            services.AddDbContext<RepositoryLayer.ContextFile.UserContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DataSource"]));
+            services.AddDbContext<RepositoryLayer.FundooApiContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:DataSource"]));
 
             services.AddAuthentication(option =>
             {
@@ -94,6 +94,10 @@ namespace Fundoos_Application
                     ValidAudience = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])) //Configuration["JwtToken:SecretKey"]  
                 };
+            });
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
             });
         }
 

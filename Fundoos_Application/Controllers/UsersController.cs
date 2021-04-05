@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using RepositoryLayer;
 using RepositoryLayer.Services;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace Fundoos_Application.Controllers
         /// <returns></returns>
         [HttpPost("Register")]
         //Here return type represents the result of an action method
-        public IActionResult Registration(User user)                                    
+        public IActionResult Registration(UserAccount user)                                    
         {
             if (ModelState.IsValid)
             {
@@ -49,7 +50,7 @@ namespace Fundoos_Application.Controllers
                 if (result != false)
                 {
                     //this.Ok returns the data in json format
-                    return this.Ok(new { Success = true, Message = "Register Record Successfully" }); 
+                    return this.Ok(new { Success = true, Message = "Register Record Successfully",Users = result }); 
                 }
                 else
                 {
@@ -74,12 +75,12 @@ namespace Fundoos_Application.Controllers
          {
              if (ModelState.IsValid)
              {
-                User result = this.userBL.Login(user);                
+                UserAccount result = this.userBL.Login(user);                
                  var tokenString = this.userBL.GenerateToken(result);
                  if (result != null)
                  {
                     //this.Ok returns the data in json format
-                    return this.Ok(new { Success = true, Message = "Login Successfully", token = tokenString });    
+                    return this.Ok(new { Success = true, Message = "Login Successfully", token = tokenString,Users = result });    
                  }
                  else
                  {
@@ -100,7 +101,7 @@ namespace Fundoos_Application.Controllers
         /// <param name="resetPasswordModel"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("reset")]
+        [HttpPost("Resetpassword")]
         public IActionResult ResetPassword(ResetPasswordModel reset)
         {
             try
@@ -131,7 +132,7 @@ namespace Fundoos_Application.Controllers
         /// </summary>
         /// <param name="forgetPasswordModel"></param>
         /// <returns></returns>
-        [HttpPost("forget")]
+        [HttpPost("ForgetPassword")]
         public ActionResult ForgetPassword(ForgetPasswordModel forgetPasswordModel)
         {
             if (ModelState.IsValid)

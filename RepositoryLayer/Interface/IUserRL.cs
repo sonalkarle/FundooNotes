@@ -9,24 +9,17 @@ namespace RepositoryLayer.Interface
     public interface IUserRL
     {
 
-     
+  
+        public bool Registration(UserAccount user);
 
-        public bool Registration(User user);
+        public UserAccount Login(LoginModule user);
 
-        public User Login(LoginModule user);
-
-        public string GenerateToken(User login);
+        public string GenerateToken(UserAccount login);
 
         public bool ResetAccountPassword(ResetPasswordModel user,string Email);
 
 
         public forgetclass ForgetPassword(ForgetPasswordModel forgetPasswordModel);
-
-
-
-
-
-
 
 
 

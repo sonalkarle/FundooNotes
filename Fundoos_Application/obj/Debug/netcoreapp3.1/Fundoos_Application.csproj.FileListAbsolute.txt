@@ -225,3 +225,11 @@ C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Applica
 C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\Fundoos_Application\obj\Debug\netcoreapp3.1\Fundoos_Application.dll
 C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\Fundoos_Application\obj\Debug\netcoreapp3.1\Fundoos_Application.pdb
 C:\Users\User\Desktop\bridgelabz assignement\Fundoos_Application\Fundoos_Application\Fundoos_Application\obj\Debug\netcoreapp3.1\Fundoos_Application.genruntimeconfig.cache
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\CloudinaryDotNet.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\Microsoft.Extensions.WebEncoders.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\System.Text.Encodings.Web.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\Pipelines.Sockets.Unofficial.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\StackExchange.Redis.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\System.Diagnostics.PerformanceCounter.dll
+C:\Users\User\source\repos\Fundoos_Application\Fundoos_Application\Fundoos_Application\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Diagnostics.PerformanceCounter.dll

@@ -3,7 +3,9 @@ using CommanLayer.ResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using RepositoryLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,16 +22,22 @@ namespace Fundoos_Application.Controllers
     {
         INotesBL notesBL;
         private IConfiguration Configuration { get; }
+        private readonly IDistributedCache distributedCache;
 
-        public NotesController(INotesBL notesBL, IConfiguration configuration)                           //Constructor n passing an object to controller
-        {                                                                           //to get an access of IEmployeeBL
+        public NotesController(INotesBL notesBL, IConfiguration configuration, IDistributedCache distributedCache)
+        {
+            //Constructor n passing an object to controller
+            //to get an access of IEmployeeBL
             this.notesBL = notesBL;
             Configuration = configuration;
+            this.distributedCache = distributedCache;
         }
+        /// <summary>
+        /// Get infromation of all notes
+        /// </summary>
+        /// <returns></returns>
 
-
-
-        [HttpGet("GetNote")]
+        [HttpGet]
         public IActionResult GetActiveNotes()
         {
             try
@@ -51,9 +59,13 @@ namespace Fundoos_Application.Controllers
                 return BadRequest(new { success = false, exception.InnerException });
             }
         }
-
-        [HttpPost("AddNote")]
-        public IActionResult AddUserNote(ResponseNoteModel Note)
+        /// <summary>
+        /// Add new node to the database
+        /// </summary>
+        /// <param name="Note"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult AddUserNote(ResponseNoteModel responseNoteModel)
         {
             try
             {
@@ -62,8 +74,8 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    Note.UserID = UserID;
-                    ResponseNoteModel result = notesBL.AddUserNote(Note);
+                    responseNoteModel.UserID = UserID;
+                    Note result = notesBL.AddUserNote(responseNoteModel);
                     return Ok(new { success = true, Note = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
@@ -74,8 +86,141 @@ namespace Fundoos_Application.Controllers
             }
         }
 
-        [HttpDelete("Delete/{NoteID}")]
-        public IActionResult DeleteNote(long NoteID)
+
+
+        [HttpPut("Pin")]
+
+        public async Task<IActionResult> Pin()
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+
+                    var result = await this.notesBL.Pin(UserID);
+                    if (result != null)
+                    {
+                        return this.Ok(new { success = true, Message = "Note unpin successfully", Data = result });
+                    }
+
+                    return BadRequest(new { success = false, Message = "no user is active please login" });
+                }
+                return BadRequest(new { success = false, Message = "Unable to unpin notes" });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { success = false, Message = "Unable to unPin notes" });
+            }
+        }
+
+        [HttpPut]
+        [Route("Archive")]
+        public async Task<IActionResult> IsArchive()
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+                    var result = await this.notesBL.Archive(UserID);
+                    if (result != null)
+                    {
+                        return this.Ok(new { success = true, Message = "Note Archive change successfully", Data = result });
+                    }
+
+                    return BadRequest(new { success = false, Message = "no user is active please login" });
+                }
+                return BadRequest(new { success = false, Message = "Unable to Archive notes" });
+
+            }
+            catch (Exception exception)
+            {
+                return this.BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("ChangeColor")]
+        public async Task<IActionResult> ChangeColor(string changeColor)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+                    var result = await this.notesBL.ChangeColor(UserID, changeColor);
+                    if (result != null)
+                    {
+                        return this.Ok(new { success = true, Message = "Note color change successfully", Data = result });
+                    }
+
+                    return BadRequest(new { success = false, Message = "no user is active please login" });
+                }
+                return BadRequest(new { success = false, Message = "Unable to change color notes" });
+
+
+            }
+
+            catch (Exception exception)
+            {
+                return this.BadRequest(exception.Message);
+            }
+        }
+       
+
+        [HttpPost]
+        [Route("uploadImage")]
+        public async Task<IActionResult> UploadImage(IFormFile image)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+                    var result = await this.notesBL.UploadImage(image, UserID);
+                    return this.Ok(new { success = true, Message = "Image upload successfully", Data = result });
+                }
+                return BadRequest(new { success = false, Message = "no user is active please login" });
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(new { success = false, exception.Message });
+            }
+        }
+
+
+        [HttpPatch("Reminder")]
+        public IActionResult SetNoteReminder( DateTime Reminder)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+                    ResponseNoteModel result = notesBL.SetNoteReminder(UserID, Reminder);
+                    return Ok(new { success = true, Message = "Note reminder added", Data = result });
+                }
+                return BadRequest(new { success = false, Message = "no user is active please login" });
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(new { success = false, exception.Message });
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteNote()
         {
             try
             {
@@ -85,8 +230,15 @@ namespace Fundoos_Application.Controllers
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     string Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
 
-                    bool result = notesBL.DeleteNote(UserID, NoteID);
-                    return Ok(new { success = true, user = Email, Message = "note deleted" });
+                    ResponseNoteModel result = notesBL.DeleteNote(UserID).Result;
+                    if (result == null)
+                    {
+                        return Ok(new { success = true, user = Email, Message = "Note deleted sucessfully", Note = result });
+                    }
+                    else
+                    {
+                        return Ok(new { success = true, user = Email, Message = "Note is added to trash", Note = result });
+                    }
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
             }
@@ -95,31 +247,10 @@ namespace Fundoos_Application.Controllers
                 return BadRequest(new { success = false, exception.Message });
             }
         }
-
-       
-
-        [HttpPatch("Image/{id}")]
-        public IActionResult UpdateImage(int id, ImageModel image)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    bool result = this.notesBL.Image(id, image);
-                    return Ok(new { success = true, Message = "image is updated sucessfully" });
-                }
-                return BadRequest(new { success = false, Message = "image is not updated sucessfully" });
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(new { success = false, exception.Message });
-            }
-        }
-
-       
-       
-        [HttpPatch("Pin/{NoteID}")]
-        public IActionResult Pin(long NoteID)
+      
+        [HttpPut]
+        [Route("restore")]
+        public async Task<IActionResult> Restore()
         {
             try
             {
@@ -128,50 +259,8 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    bool result = notesBL.Pin(NoteID, UserID);
-                    return Ok(new { success = true, Message = "note pin toggled", Note = result });
-                }
-                return BadRequest(new { success = false, Message = "no user is active please login" });
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(new { success = false, exception.Message });
-            }
-        }
-        [HttpPatch("Color/{NoteID}/{ColorCode}")]
-        public IActionResult ChangeNoteBackgroundColor(long NoteID, string ColorCode)
-        {
-            try
-            {
-                var identity = User.Identity as ClaimsIdentity;
-                if (identity != null)
-                {
-                    IEnumerable<Claim> claims = identity.Claims;
-                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    bool result = notesBL.ChangeColor(NoteID, UserID, ColorCode);
-                    return Ok(new { success = true, Message = "note background color changed", Note = result });
-                }
-                return BadRequest(new { success = false, Message = "no user is active please login" });
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(new { success = false, exception.Message });
-            }
-        }
-       
-        [HttpPatch("SetReminder")]
-        public IActionResult SetNoteReminder(NoteReminder Reminder)
-        {
-            try
-            {
-                var identity = User.Identity as ClaimsIdentity;
-                if (identity != null)
-                {
-                    IEnumerable<Claim> claims = identity.Claims;
-                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    Reminder.UserID = UserID;
-                    bool result = notesBL.SetNoteReminder(Reminder);
-                    return Ok(new { success = true, Message = "note reminder added" });
+                    var result = await this.notesBL.Restore(UserID);
+                    return this.Ok(new { success = true, Message = "Note restore successfully", Data = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
             }
@@ -181,9 +270,9 @@ namespace Fundoos_Application.Controllers
             }
         }
 
-
-        [HttpPatch("Archive/{NoteID}")]
-        public IActionResult Archive(long NoteID)
+        [HttpDelete]
+        [Route("emptyTrash")]
+        public async Task<IActionResult> EmptyTrash()
         {
             try
             {
@@ -192,16 +281,18 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    bool result = notesBL.Archive(NoteID, UserID);
-                    return Ok(new { success = true, Message = "note is Archieved", Note = result });
+                    var result = await this.notesBL.EmptyTrash();
+                    return this.Ok(new { success = true, Message = "Trash empty successfully", Data = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
+
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                return BadRequest(new { success = false, exception.Message });
+                return BadRequest(new { success = false, Message = "Unable to empty trash" });
             }
-        }
+        }  
+
     }
 
 }

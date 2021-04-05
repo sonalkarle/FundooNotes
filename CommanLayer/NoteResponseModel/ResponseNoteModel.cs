@@ -8,6 +8,7 @@ namespace CommanLayer.ResponseModel
     {
         public long UserID { get; set; }
         public long NoteId { get; set; }
+
         public string Title { get; set; }
         public string Body { get; set; }
         public string Color { get; set; }
@@ -16,8 +17,9 @@ namespace CommanLayer.ResponseModel
         public bool isPin { get; set; }
         public bool isArchieve { get; set; }
         public bool isTrash { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime? ReminderOn { get; set; }
+       
+        
+
 
     }
 }

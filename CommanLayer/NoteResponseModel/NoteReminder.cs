@@ -8,7 +8,7 @@ namespace CommanLayer.ResponseModel
     public class NoteReminder
     {
         public long UserID { get; set; }
-        [Required]
+    
         public long NoteID { get; set; }
         [Required]
         public DateTime ReminderOn { get; set; }

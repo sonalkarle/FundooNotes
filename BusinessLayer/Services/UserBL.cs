@@ -1,7 +1,9 @@
 ﻿using BusinessLayer.Interface;
 using CommanLayer.ResponseModel;
 using CommonLayer.ResponseModel;
+using CommonLayer.UserAccountException;
 using Microsoft.IdentityModel.Tokens;
+using RepositoryLayer;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
@@ -24,7 +26,7 @@ namespace BusinessLayer.Services
 
        
 
-        public bool Registration(User user)
+        public bool Registration(UserAccount user)
         {
             try
             {
@@ -38,7 +40,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        public string GenerateToken(User login)
+        public string GenerateToken(UserAccount login)
         {
             try
             {
@@ -60,12 +62,12 @@ namespace BusinessLayer.Services
                 return this.userRL.ForgetPassword(forgetPasswordModel);                 //throw exceptions
             }
 
-            catch (Exception e)
+            catch (UserAccountException)
             {
-                throw e;
+                throw new UserAccountException(UserAccountException.ExceptionType.EMAIL_DONT_EXIST, "Email Doesnt exist");
             }
         }
-        public User Login(LoginModule login)
+        public UserAccount Login(LoginModule login)
         {
             try
             {
@@ -73,9 +75,9 @@ namespace BusinessLayer.Services
                 return this.userRL.Login(login);                 //throw exceptions
             }
 
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
+                throw ex;
             }
         }
 

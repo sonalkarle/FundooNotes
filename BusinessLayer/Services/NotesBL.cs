@@ -1,142 +1,201 @@
 ﻿using BusinessLayer.Interface;
+using BusinessLayer.RedisCacheService;
 using CommanLayer.ResponseModel;
+using CommonLayer.NoteException;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Linq;
+using RepositoryLayer;
 
 namespace BusinessLayer.Services
 {
     public class NotesBL : INotesBL
     {
-        
 
-        INotesRL notesRL;
-
-        public NotesBL(INotesRL notesRL)
+        private readonly IDistributedCache distributedCache;
+        readonly INotesRL notesRL;
+        RedisCacheServiceBL redis;
+        public NotesBL(INotesRL notesRL, IDistributedCache distributedCache)
         {
             this.notesRL = notesRL;
+            this.distributedCache = distributedCache;
+            redis = new RedisCacheServiceBL(this.distributedCache);
         }
 
 
 
-        public ResponseNoteModel AddUserNote(ResponseNoteModel note)
+        public Note AddUserNote(ResponseNoteModel note)
         {
             try
             {
-               
                 return notesRL.AddUserNote(note);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
-            }
-        }
-
-        public ICollection<ResponseNoteModel> GetActiveNotes(long UserID)
-        {
-            try
-            {
-                ICollection<ResponseNoteModel> result = notesRL.GetNotes(UserID, false, false);
-                return result;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-        public bool DeleteNote(long UserID, long noteID)
-        {
-            try
-            {
-                bool result = notesRL.DeleteNote(UserID, noteID);
-                return result;
-            }
-            catch (Exception)
-            {
-                throw;
+                throw ex;
             }
         }
 
        
 
-        public bool Image(int id, ImageModel image)
+        public async Task<string> EmptyTrash()
+        {
+            try
+            {
+                await this.notesRL.EmptyTrash();
+                return "Trash Removed";
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+       
+
+        public async Task<ResponseNoteModel> Pin(long UserID)
+        {
+            try
+            {
+                
+                var result = await this.notesRL.pin(UserID);
+                return result;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+      
+      
+        public async Task<ResponseNoteModel> UploadImage(IFormFile image, long UserID)
+        {
+            try
+            {
+            
+                var result = await this.notesRL.UploadImage(image, UserID);
+                return result;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+
+        public async Task<ResponseNoteModel> DeleteNote(long UserID)
+        {
+            try
+            {
+                await redis.RemoveNotesRedisCache(UserID);
+                ResponseNoteModel result = notesRL.DeleteNote(UserID);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<ICollection<ResponseNoteModel>> GetActiveNotes(long UserID)
+        {
+            var cacheKey = "ActiveNotes:" + UserID.ToString();
+            string serializedNotes;
+            ICollection<ResponseNoteModel> Notes;
+            try
+            {
+                var redisNoteCollection = await distributedCache.GetAsync(cacheKey);
+                if (redisNoteCollection != null)
+                {
+                    serializedNotes = Encoding.UTF8.GetString(redisNoteCollection);
+                    Notes = JsonConvert.DeserializeObject<List<ResponseNoteModel>>(serializedNotes);
+                }
+                else
+                {
+                    Notes = notesRL.GetNotes(UserID);
+                    await redis.AddRedisCache(cacheKey, Notes);
+                }
+                return Notes;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public async Task<ResponseNoteModel> Restore(long UserID)
+        {
+            try
+            {
+                var result =  await this.notesRL.Restore(UserID);
+                return result;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+       
+  
+
+
+        public ResponseNoteModel SetNoteReminder( long UserID, DateTime reminder)
         {
             try
             {
 
-                return this.notesRL.Image(id, image);                 //throw exceptions
+                return notesRL.SetNoteReminder( UserID, reminder);
             }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
+        }
+        public async Task<ResponseNoteModel> ChangeColor(long UserID, string color)
+        {
+            try
+            {
+             
+                var result = await this.notesRL.ChangeColor(UserID, color);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception(e.Message);
             }
         }
+      
+        public async Task<ResponseNoteModel> Archive(long UserID)
+        {
+            try
+            {
+                 var result = await this.notesRL.Archive(UserID);
+                return result;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+    
+       
 
        
-        
-       
-
-
-        public bool Archive(long noteID, long userID)
-        {
-            try
-            {
-                return notesRL.isArchive(noteID, userID);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public bool Pin(long noteID, long userID)
-        {
-            try
-            {
-                return notesRL.isPin(noteID, userID);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-        public bool SetNoteReminder(NoteReminder reminder)
-        {
-            try
-            {
-                if (reminder.ReminderOn < DateTime.Now)
-                {
-                    throw new Exception("Time is passed");
-                }
-                if (reminder.NoteID == default)
-                {
-                    throw new Exception("NoteID missing");
-                }
-                return notesRL.SetNoteReminder(reminder);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public bool ChangeColor(long noteID, long userID, string colorCode)
-        {
-            try
-            {
-                return notesRL.ChangeColor(noteID, userID, colorCode);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-
-
 
     }
 
