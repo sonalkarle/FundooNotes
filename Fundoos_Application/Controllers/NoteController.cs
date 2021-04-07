@@ -1,11 +1,11 @@
 ﻿using BusinessLayer.Interface;
 using CommanLayer.ResponseModel;
+using CommonLayer.RequestModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
-using RepositoryLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +20,11 @@ namespace Fundoos_Application.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
+        
         INotesBL notesBL;
         private IConfiguration Configuration { get; }
         private readonly IDistributedCache distributedCache;
+        
 
         public NotesController(INotesBL notesBL, IConfiguration configuration, IDistributedCache distributedCache)
         {
@@ -49,8 +51,8 @@ namespace Fundoos_Application.Controllers
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     string Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
 
-                    var result = notesBL.GetActiveNotes(UserID);
-                    return Ok(new { success = true, user = Email, Notes = result });
+                    var result = this.notesBL.GetActiveNotes(UserID);
+                    return this.Ok(new { success = true, user = Email, Notes = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
             }
@@ -75,7 +77,7 @@ namespace Fundoos_Application.Controllers
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     responseNoteModel.UserID = UserID;
-                    Note result = notesBL.AddUserNote(responseNoteModel);
+                    ResponseNoteModel result = notesBL.AddUserNote(responseNoteModel);
                     return Ok(new { success = true, Note = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
@@ -88,9 +90,9 @@ namespace Fundoos_Application.Controllers
 
 
 
-        [HttpPut("Pin")]
+        [HttpPut("{noteID}/Pin")]
 
-        public async Task<IActionResult> Pin()
+        public async Task<IActionResult> Pin(long noteID)
         {
             try
             {
@@ -100,7 +102,7 @@ namespace Fundoos_Application.Controllers
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
 
-                    var result = await this.notesBL.Pin(UserID);
+                    var result = await this.notesBL.Pin(UserID,noteID);
                     if (result != null)
                     {
                         return this.Ok(new { success = true, Message = "Note unpin successfully", Data = result });
@@ -117,8 +119,8 @@ namespace Fundoos_Application.Controllers
         }
 
         [HttpPut]
-        [Route("Archive")]
-        public async Task<IActionResult> IsArchive()
+        [Route("{noteID}/Archive")]
+        public async Task<IActionResult> IsArchive(long noteID)
         {
             try
             {
@@ -127,7 +129,7 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    var result = await this.notesBL.Archive(UserID);
+                    var result = await this.notesBL.Archive(UserID,noteID);
                     if (result != null)
                     {
                         return this.Ok(new { success = true, Message = "Note Archive change successfully", Data = result });
@@ -145,8 +147,8 @@ namespace Fundoos_Application.Controllers
         }
 
         [HttpPut]
-        [Route("ChangeColor")]
-        public async Task<IActionResult> ChangeColor(string changeColor)
+        [Route("{noteID}/ChangeColor")]
+        public async Task<IActionResult> ChangeColor(string changeColor, long noteID)
         {
             try
             {
@@ -155,7 +157,7 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    var result = await this.notesBL.ChangeColor(UserID, changeColor);
+                    var result = await this.notesBL.ChangeColor(UserID, changeColor,noteID);
                     if (result != null)
                     {
                         return this.Ok(new { success = true, Message = "Note color change successfully", Data = result });
@@ -176,8 +178,8 @@ namespace Fundoos_Application.Controllers
        
 
         [HttpPost]
-        [Route("uploadImage")]
-        public async Task<IActionResult> UploadImage(IFormFile image)
+        [Route("{noteID}/uploadImage")]
+        public async Task<IActionResult> UploadImage(IFormFile image, long noteID)
         {
             try
             {
@@ -186,7 +188,7 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    var result = await this.notesBL.UploadImage(image, UserID);
+                    var result = await this.notesBL.UploadImage(image, UserID,noteID);
                     return this.Ok(new { success = true, Message = "Image upload successfully", Data = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
@@ -198,8 +200,8 @@ namespace Fundoos_Application.Controllers
         }
 
 
-        [HttpPatch("Reminder")]
-        public IActionResult SetNoteReminder( DateTime Reminder)
+        [HttpPatch("{NoteId)}/setReminder")]
+        public async Task<IActionResult> SetNoteReminder( NoteReminder Reminder,long NoteId)
         {
             try
             {
@@ -208,7 +210,7 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    ResponseNoteModel result = notesBL.SetNoteReminder(UserID, Reminder);
+                    var result = await this.notesBL.SetNoteReminder(Reminder,UserID,NoteId);
                     return Ok(new { success = true, Message = "Note reminder added", Data = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
@@ -218,9 +220,32 @@ namespace Fundoos_Application.Controllers
                 return BadRequest(new { success = false, exception.Message });
             }
         }
+        /*
+        [HttpDelete("{NoteId}/deleteReminder")]
+        public async Task<IActionResult> DeleteNoteReminder(long NoteId)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+                    var result = await this.notesBL.DeleteNoteReminder(UserID, NoteId);
+                    return Ok(new { success = true, Message = "Note reminder deleted", Data = result });
+                }
+                return BadRequest(new { success = false, Message = "no user is active please login" });
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(new { success = false, exception.Message });
+            }
+        }
+        */
+        
 
         [HttpDelete]
-        public IActionResult DeleteNote()
+        public IActionResult DeleteNote(long noteID)
         {
             try
             {
@@ -230,7 +255,7 @@ namespace Fundoos_Application.Controllers
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     string Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
 
-                    ResponseNoteModel result = notesBL.DeleteNote(UserID).Result;
+                    ResponseNoteModel result = notesBL.DeleteNote(UserID,noteID).Result;
                     if (result == null)
                     {
                         return Ok(new { success = true, user = Email, Message = "Note deleted sucessfully", Note = result });
@@ -249,8 +274,8 @@ namespace Fundoos_Application.Controllers
         }
       
         [HttpPut]
-        [Route("restore")]
-        public async Task<IActionResult> Restore()
+        [Route("{noteID}/restore")]
+        public async Task<IActionResult> Restore(long noteID)
         {
             try
             {
@@ -259,7 +284,7 @@ namespace Fundoos_Application.Controllers
                 {
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
-                    var result = await this.notesBL.Restore(UserID);
+                    var result = await this.notesBL.Restore(UserID,noteID);
                     return this.Ok(new { success = true, Message = "Note restore successfully", Data = result });
                 }
                 return BadRequest(new { success = false, Message = "no user is active please login" });
@@ -291,7 +316,10 @@ namespace Fundoos_Application.Controllers
             {
                 return BadRequest(new { success = false, Message = "Unable to empty trash" });
             }
-        }  
+        }
+
+
+       
 
     }
 

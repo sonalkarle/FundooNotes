@@ -10,13 +10,13 @@ namespace BusinessLayer.Interface
     public interface IUserBL
     {
 
-
-        public bool Registration(UserAccount user);
+        
+        public bool Registration(ResponseUserAccount user);
         public UserAccount Login(LoginModule user);
         public string GenerateToken(UserAccount login);
         public bool ResetAccountPassword(ResetPasswordModel user,string Email);
         public forgetclass ForgetPassword(ForgetPasswordModel forgetPasswordModel);
-
+        
 
 
     }

@@ -16,18 +16,24 @@ namespace RepositoryLayer.Services
 {
     public class UserRL : IUserRL
     {
+        
         readonly FundooApiContext userContext;
+       
+        
+
         private IConfiguration Configuration { get; }
         public UserRL(FundooApiContext context, IConfiguration configuration)
         {
             userContext = context;
             Configuration = configuration;
+        
+            
         }
 
 
-        
 
-        public bool Registration(UserAccount user)
+
+        public bool Registration(ResponseUserAccount user)
         {
             if (!userContext.Accounts.Any(u => u.Email == user.Email))
             {
@@ -39,24 +45,22 @@ namespace RepositoryLayer.Services
                     DateOfBirth = user.DateOfBirth,
                     PhoneNumber = user.PhoneNumber,
                     Password = Password.ConvertToEncrypt(user.Password),
-                    Creationtime = user.Creationtime,
+                    Creationtime = user.Creationtime = DateTime.Now,
                     Modificationtime = user.Modificationtime,
+                  
                 };
 
                 userContext.Accounts.Add(register);
                 userContext.SaveChanges();
                 return true;
             }
-           
+
             else
             {
-                throw new UserAccountException(UserAccountException.ExceptionType.EMAIL_ALREADY_EXIST, "Email Id alredy exist");
+               throw new UserAccountException(UserAccountException.ExceptionType.EMAIL_ALREADY_EXIST, "Email Id alredy exist");
             }
-            return false;
+           
         }
-        
-       
-
         public UserAccount Login(LoginModule login)
         {
             try
@@ -100,36 +104,36 @@ namespace RepositoryLayer.Services
             {
                 throw ex;
             }
-
-           
         }
-        public string GenerateToken(UserAccount login)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[] {
+            public string GenerateToken(UserAccount login)
+            {
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                var claims = new[] {
 
                   new Claim("UserId", login.UserId.ToString()),
                   new Claim("Email", login.Email),
 
               };
-            var token = new JwtSecurityToken(Configuration["Jwt:Issuer"],
-               Configuration["Jwt:Issuer"],
-               claims,
-               expires: DateTime.Now.AddMinutes(120),
-               signingCredentials: credentials);
+                var token = new JwtSecurityToken(Configuration["Jwt:Issuer"],
+                   Configuration["Jwt:Issuer"],
+                   claims,
+                   expires: DateTime.Now.AddMinutes(120),
+                   signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        public forgetclass ForgetPassword(ForgetPasswordModel forgetPasswordModel)
-        {
+                return new JwtSecurityTokenHandler().WriteToken(token);
+            }
         
+            public forgetclass ForgetPassword(ForgetPasswordModel forgetPasswordModel)
+            {
+
                 ForgetModel forget = new ForgetModel();
-            UserAccount login = new UserAccount();
+                UserAccount login = new UserAccount();
                 login.Email = forgetPasswordModel.Email;
-            UserAccount validateEmail = userContext.Accounts
-                      .Where(e => e.Email.Equals(login.Email)).FirstOrDefault(e => e.Email == login.Email);
+                UserAccount validateEmail = userContext.Accounts
+                          .Where(e => e.Email.Equals(login.Email)).FirstOrDefault(e => e.Email == login.Email);
                 var jwt = GenerateToken(validateEmail);
                 forget.JwtToken = jwt;
 
@@ -145,9 +149,11 @@ namespace RepositoryLayer.Services
                 {
                     throw new UserAccountException(UserAccountException.ExceptionType.EMAIL_DONT_EXIST, "email address is not registered");
                 }
-                  
-            
-        }
+
+
+            }
+        
+
 
         public bool ResetAccountPassword(ResetPasswordModel reset, string Email)
         {
@@ -176,13 +182,13 @@ namespace RepositoryLayer.Services
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw ex;
+                throw;
             }
 
         }
-
+        
     }
 
 }

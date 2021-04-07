@@ -4,6 +4,7 @@ using System.Text;
 
 namespace CommanLayer.ResponseModel
 {
+
     public class ForgetModel
     {
 

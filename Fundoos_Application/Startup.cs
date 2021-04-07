@@ -39,6 +39,10 @@ namespace Fundoos_Application
             services.AddScoped<IUserBL, UserBL>();
             services.AddScoped<INotesRL, NotesRL>();
             services.AddScoped<INotesBL, NotesBL>();
+            services.AddScoped<ILableRL, LableRL>();
+            services.AddScoped<ILableBL, LableBL>();
+            services.AddScoped<IcollabratorRL, CollabratorRL>();
+            services.AddScoped<IcollabatorBL, CollabratorBL>();
             // Enable Swagger   
             services.AddSwaggerGen(swagger =>
             {

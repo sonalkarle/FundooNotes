@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Interface;
+using BusinessLayer.Services;
 using CommanLayer.ResponseModel;
 using CommonLayer.ResponseModel;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Fundoos_Application.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -24,77 +26,92 @@ namespace Fundoos_Application.Controllers
 
 
         //Constructor n passing an object to controller
-        public UsersController(IUserBL userBL, IConfiguration configuration)                        
+        public UsersController(IUserBL userBL, IConfiguration configuration)
         {
             //to get an access of IUserBL
             this.userBL = userBL;
             Configuration = configuration;
 
-
         }
-        
+
 
         /// <summary>
         /// Register the new ID
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
+
         [HttpPost("Register")]
         //Here return type represents the result of an action method
-        public IActionResult Registration(UserAccount user)                                    
+        public IActionResult Registration(ResponseUserAccount user)
         {
-            if (ModelState.IsValid)
+            try
             {
-
-                bool result = this.userBL.Registration(user);                  
-                if (result != false)
+                if (ModelState.IsValid)
                 {
-                    //this.Ok returns the data in json format
-                    return this.Ok(new { Success = true, Message = "Register Record Successfully",Users = result }); 
+
+                    bool result = this.userBL.Registration(user);
+                    if (result != false)
+                    {
+                        //this.Ok returns the data in json format
+                        return this.Ok(new { Success = true, Message = "Register Record Successfully", Users = result });
+                    }
+                    else
+                    {
+                        return this.BadRequest(new { Success = false, Message = "Register Record Unsuccessfully" });
+                    }
                 }
+
                 else
                 {
-                    return this.BadRequest(new { Success = false, Message = "Register Record Unsuccessfully" });
+                    throw new Exception("Model is not valid");
                 }
             }
-
-            else
+            catch (Exception ex)
             {
-                throw new Exception("Model is not valid");
+                return BadRequest(new { Success = false, ex.Message });
             }
         }
+
 
         /// <summary>
         /// Get login to register ID
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-         [HttpPost("Login")]
+        [HttpPost("Login")]
         //Here return type represents the result of an action method
-        public IActionResult Login(LoginModule user)                                    
-         {
-             if (ModelState.IsValid)
-             {
-                UserAccount result = this.userBL.Login(user);                
-                 var tokenString = this.userBL.GenerateToken(result);
-                 if (result != null)
-                 {
-                    //this.Ok returns the data in json format
-                    return this.Ok(new { Success = true, Message = "Login Successfully", token = tokenString,Users = result });    
-                 }
-                 else
-                 {
-                     return this.BadRequest(new { Success = false, Message = "Login Unsuccessfully" });
-                 }
-             }
-             else
-             {
-                 throw new Exception("Model is not valid");
-             }
-         }
+        public IActionResult Login(LoginModule user)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    UserAccount result = this.userBL.Login(user);
+                    var tokenString = this.userBL.GenerateToken(result);
+                    if (result != null)
+                    {
+                        //this.Ok returns the data in json format
+                        return this.Ok(new { Success = true, Message = "Login Successfully", token = tokenString, Users = result });
+                    }
+                    else
+                    {
+                        return this.BadRequest(new { Success = false, Message = "Login Unsuccessfully" });
+                    }
+                }
+                else
+                {
+                    throw new Exception("Model is not valid");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Success = false, ex.Message });
+            }
+        }
 
 
-       
         /// <summary>
         /// Reset password of authorized ID
         /// </summary>
@@ -113,7 +130,7 @@ namespace Fundoos_Application.Controllers
                     var UserId = claims.Where(x => x.Type == "UserId").FirstOrDefault()?.Value;
                     var Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
 
-                    bool result = this.userBL.ResetAccountPassword(reset,Email);
+                    bool result = this.userBL.ResetAccountPassword(reset, Email);
                     if (result)
                     {
                         return Ok(new { success = true, Message = "password is reset successfully" });
@@ -135,29 +152,32 @@ namespace Fundoos_Application.Controllers
         [HttpPost("ForgetPassword")]
         public ActionResult ForgetPassword(ForgetPasswordModel forgetPasswordModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                forgetclass result = userBL.ForgetPassword(forgetPasswordModel);                   //getting the data from BusinessLayer
-                var msmq = new MSMQ(Configuration);
-                msmq.MSMQSender(result);
-                if (result != null)
+                if (ModelState.IsValid)
                 {
-                    return this.Ok(new { Success = true, Message = "Your password has been forget sucessfully now you can reset your password" });   //(smd format)    //this.Ok returns the data in json format
-                }
+                    forgetclass result = userBL.ForgetPassword(forgetPasswordModel);                   //getting the data from BusinessLayer
+                    var msmq = new MSMQ(Configuration);
+                    msmq.MSMQSender(result);
+                    if (result != null)
+                    {
+                        return this.Ok(new { Success = true, Message = "Your password has been forget sucessfully now you can reset your password" });   //(smd format)    //this.Ok returns the data in json format
+                    }
 
+                    else
+                    {
+                        return this.Ok(new { Success = true, Message = "Other User is trying to login from your account" });   //(smd format)    //this.Ok returns the data in json format
+                    }
+                }
                 else
                 {
-                    return this.Ok(new { Success = true, Message = "Other User is trying to login from your account" });   //(smd format)    //this.Ok returns the data in json format
+                    return null;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return null;
+                return BadRequest(new { Success = false, ex.Message });
             }
         }
-
-
-
-
     }
 }

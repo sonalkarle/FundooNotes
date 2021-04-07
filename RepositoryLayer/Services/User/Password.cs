@@ -7,7 +7,7 @@ namespace RepositoryLayer.Services
     public class Password
     {
 
-        public static  string ConvertToEncrypt(string password)
+        public static string ConvertToEncrypt(string password)
         {
             if (string.IsNullOrEmpty(password)) return "";
             var passwordBytes = Encoding.UTF8.GetBytes(password);

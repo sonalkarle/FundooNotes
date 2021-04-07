@@ -17,8 +17,18 @@ namespace CommanLayer.ResponseModel
         public bool isPin { get; set; }
         public bool isArchieve { get; set; }
         public bool isTrash { get; set; }
-       
-        
+        public DateTime CreateonTime { get; set; }
+        public DateTime ModificationTime { get; set; }
+
+        public ICollection<string> Collaborators { get; set; }
+
+        public ResponseNoteModel()
+        {
+            this.CreateonTime = DateTime.Now;
+            this.ModificationTime = DateTime.Now;
+        }
+
+
 
 
     }

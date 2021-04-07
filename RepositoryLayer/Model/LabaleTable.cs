@@ -5,13 +5,14 @@ using System.Collections.Generic;
 
 namespace RepositoryLayer
 {
-    public partial class Lable
+    public partial class LabaleTable
     {
-        public long? UserId { get; set; }
-        public long? LableId { get; set; }
+        public long? NoteId { get; set; }
+        public long LableId { get; set; }
         public string LableName { get; set; }
+        public long? UserId { get; set; }
 
-        public virtual NoteLable LableNavigation { get; set; }
+        public virtual Note Note { get; set; }
         public virtual UserAccount User { get; set; }
     }
 }

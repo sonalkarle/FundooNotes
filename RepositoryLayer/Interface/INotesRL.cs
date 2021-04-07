@@ -1,4 +1,5 @@
 ﻿using CommanLayer.ResponseModel;
+using CommonLayer.RequestModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -12,21 +13,28 @@ namespace RepositoryLayer.Interface
     {
 
 
-        public Note AddUserNote(ResponseNoteModel note);
-        public ResponseNoteModel DeleteNote(long UserID);
+        public ResponseNoteModel AddUserNote(ResponseNoteModel note);
+        public ResponseNoteModel DeleteNote(long UserID, long noteID);
        
         public ICollection<ResponseNoteModel> GetNotes(long UserID);
-        public ResponseNoteModel SetNoteReminder( long userID, DateTime reminder);
-        Task<ResponseNoteModel> Archive(long UserID);
+        Task<ResponseNoteModel> Archive(long UserID, long noteID);
      
         List<Note> ArchiveList();
-        Task<ResponseNoteModel> UploadImage(IFormFile image, long UserID);
-        Task<ResponseNoteModel> Restore(long UserID);
+        Task<ResponseNoteModel> UploadImage(IFormFile image, long UserID, long noteID);
+        Task<ResponseNoteModel> Restore(long UserID, long noteID);
 
-       Task<ResponseNoteModel> pin(long UserID);
-        Task<ResponseNoteModel> ChangeColor(long UserID, string color);
+       Task<ResponseNoteModel> pin(long UserID, long noteID);
+        Task<ResponseNoteModel> ChangeColor(long UserID, string color, long noteID);
+        Task<NoteReminder> SetNoteReminder(NoteReminder reminder, long UserID, long NoteID);
+        Task<string> DeleteNoteReminder(long UserID, long NoteID);
+        Task<ResponseNoteModel> UpdateNote(ResponseNoteModel Note,long UserId, long NoteID);
 
-       
+
+
+
+
+
+
         Task<string> EmptyTrash();
        
         

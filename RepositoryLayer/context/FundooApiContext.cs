@@ -19,9 +19,8 @@ namespace RepositoryLayer
 
         public virtual DbSet<UserAccount> Accounts { get; set; }
         public virtual DbSet<Collaborator> Collaborators { get; set; }
-        public virtual DbSet<Lable> Lables { get; set; }
+        public virtual DbSet<LabaleTable> LabaleTables { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
-        public virtual DbSet<NoteLable> NoteLables { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -39,7 +38,7 @@ namespace RepositoryLayer
             modelBuilder.Entity<UserAccount>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Account__1788CC4C48307FF7");
+                    .HasName("PK__Account__1788CC4C3CEEB4A4");
 
                 entity.ToTable("Account");
 
@@ -74,7 +73,7 @@ namespace RepositoryLayer
             {
                 entity.ToTable("Collaborator");
 
-                entity.HasIndex(e => e.CollaboratorEmail, "UQ__Collabor__6D342036ADD67442")
+                entity.HasIndex(e => e.CollaboratorEmail, "UQ__Collabor__6D342036D439FCC3")
                     .IsUnique();
 
                 entity.Property(e => e.CollaboratorEmail)
@@ -92,26 +91,31 @@ namespace RepositoryLayer
                     .HasConstraintName("FKofAccounttoColl");
             });
 
-            modelBuilder.Entity<Lable>(entity =>
+            modelBuilder.Entity<LabaleTable>(entity =>
             {
-                entity.HasKey(e => e.LableName)
-                    .HasName("PK__Lable__2F4C7B1D74F533B4");
+                entity.HasKey(e => e.LableId)
+                    .HasName("PK__labaleTa__D6E6D11C921D72A3");
 
-                entity.ToTable("Lable");
+                entity.ToTable("labaleTable");
+
+                entity.Property(e => e.LableId).HasColumnName("lableID");
 
                 entity.Property(e => e.LableName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("lableName");
 
-                entity.HasOne(d => d.LableNavigation)
-                    .WithMany(p => p.Lables)
-                    .HasForeignKey(d => d.LableId)
-                    .HasConstraintName("Forign_key");
+                entity.Property(e => e.NoteId).HasColumnName("NoteID");
+
+                entity.HasOne(d => d.Note)
+                    .WithMany(p => p.LabaleTables)
+                    .HasForeignKey(d => d.NoteId)
+                    .HasConstraintName("Fforlabletonote");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Lables)
+                    .WithMany(p => p.LabaleTables)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FKforlable");
+                    .HasConstraintName("FforlabletoAccout");
             });
 
             modelBuilder.Entity<Note>(entity =>
@@ -150,21 +154,6 @@ namespace RepositoryLayer
                     .WithMany(p => p.Notes)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK");
-            });
-
-            modelBuilder.Entity<NoteLable>(entity =>
-            {
-                entity.HasKey(e => e.LableId)
-                    .HasName("PK__NoteLabl__2063BAA41B68D641");
-
-                entity.ToTable("NoteLable");
-
-                entity.Property(e => e.LableId).ValueGeneratedNever();
-
-                entity.HasOne(d => d.Note)
-                    .WithMany(p => p.NoteLables)
-                    .HasForeignKey(d => d.NoteId)
-                    .HasConstraintName("Key_foreignforNotelable");
             });
 
             OnModelCreatingPartial(modelBuilder);

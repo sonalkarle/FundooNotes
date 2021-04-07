@@ -10,7 +10,7 @@ namespace RepositoryLayer
         public Note()
         {
             Collaborators = new HashSet<Collaborator>();
-            NoteLables = new HashSet<NoteLable>();
+            LabaleTables = new HashSet<LabaleTable>();
         }
 
         public long? UserId { get; set; }
@@ -28,6 +28,6 @@ namespace RepositoryLayer
 
         public virtual UserAccount User { get; set; }
         public virtual ICollection<Collaborator> Collaborators { get; set; }
-        public virtual ICollection<NoteLable> NoteLables { get; set; }
+        public virtual ICollection<LabaleTable> LabaleTables { get; set; }
     }
 }

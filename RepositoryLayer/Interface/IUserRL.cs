@@ -10,7 +10,7 @@ namespace RepositoryLayer.Interface
     {
 
   
-        public bool Registration(UserAccount user);
+        public bool Registration(ResponseUserAccount user);
 
         public UserAccount Login(LoginModule user);
 

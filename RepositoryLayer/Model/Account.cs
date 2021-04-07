@@ -10,7 +10,7 @@ namespace RepositoryLayer
         public UserAccount()
         {
             Collaborators = new HashSet<Collaborator>();
-            Lables = new HashSet<Lable>();
+            LabaleTables = new HashSet<LabaleTable>();
             Notes = new HashSet<Note>();
         }
 
@@ -25,7 +25,7 @@ namespace RepositoryLayer
         public DateTime? Modificationtime { get; set; }
 
         public virtual ICollection<Collaborator> Collaborators { get; set; }
-        public virtual ICollection<Lable> Lables { get; set; }
+        public virtual ICollection<LabaleTable> LabaleTables { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
     }
 }

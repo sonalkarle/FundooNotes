@@ -1,7 +1,9 @@
 ﻿using BusinessLayer.Interface;
+
 using CommanLayer.ResponseModel;
 using CommonLayer.ResponseModel;
 using CommonLayer.UserAccountException;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer;
 using RepositoryLayer.Interface;
@@ -16,28 +18,46 @@ namespace BusinessLayer.Services
     public class UserBL : IUserBL
 
     {
-        IUserRL userRL;
+        readonly UserDetailValidation userDetailValidation;
 
-        public UserBL(IUserRL userRL)
+        IUserRL userRL;
+       
+
+        public UserBL(IUserRL userRL, IConfiguration config)
         {
+            userDetailValidation = new UserDetailValidation();
+      
+
             this.userRL = userRL;
         }
 
 
-       
+      
 
-        public bool Registration(UserAccount user)
+        public bool Registration(ResponseUserAccount user)
         {
             try
             {
 
-                return this.userRL.Registration(user);                 //throw exceptions
-            }
+                if (userDetailValidation.ValidateFirstName(user.FirstName) &&
+              userDetailValidation.ValidateLastName(user.LastName) &&
+              userDetailValidation.ValidateEmailAddress(user.Email) &&
+              userDetailValidation.ValidatePassword(user.Password))
+                {
 
-            catch (Exception e)
-            {
-                throw e;
+                    return this.userRL.Registration(user);
+                }
+                else
+                {
+                    throw new UserDetailException(UserDetailException.ExceptionType.ENTERED_INVALID_USER_DETAILS, "user details are invalid");
+                }
             }
+            catch (Exception)
+            {
+                throw;
+            }            
+
+        
         }
 
         public string GenerateToken(UserAccount login)
@@ -62,26 +82,31 @@ namespace BusinessLayer.Services
                 return this.userRL.ForgetPassword(forgetPasswordModel);                 //throw exceptions
             }
 
-            catch (UserAccountException)
+            catch (Exception)
             {
-                throw new UserAccountException(UserAccountException.ExceptionType.EMAIL_DONT_EXIST, "Email Doesnt exist");
+                throw;
             }
         }
-        public UserAccount Login(LoginModule login)
+        public UserAccount Login(LoginModule user)
         {
             try
             {
-
-                return this.userRL.Login(login);                 //throw exceptions
+                if (userDetailValidation.ValidateEmailAddress(user.Email) &&
+                userDetailValidation.ValidatePassword(user.Password))
+                {
+                    return userRL.Login(user);
+                }
+                else
+                {
+                    throw new UserDetailException(UserDetailException.ExceptionType.ENTERED_INVALID_USER_DETAILS, "user details are invalid");
+                }
             }
-
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
-       
         /// <summary>
         /// Resets the account password when password is known
         /// </summary>
@@ -91,13 +116,27 @@ namespace BusinessLayer.Services
         public bool ResetAccountPassword(ResetPasswordModel user,string Email)
         {
 
+            try
             {
-                return userRL.ResetAccountPassword(user,Email);
-            }
+                if (userDetailValidation.ValidatePassword(user.NewPassword))
 
+                {
+                    return userRL.ResetAccountPassword(user, Email);
+                }
+                else
+                {
+                    throw new UserDetailException(UserDetailException.ExceptionType.CONFIRM_PASSWORD_DO_NO_MATCH, "New and comfirm password do not match");
+                }
+                }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-
-
     }
+
+
+
+    
 }
