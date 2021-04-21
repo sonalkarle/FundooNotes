@@ -8,7 +8,7 @@ namespace RepositoryLayer.Interface
 {
     public interface IcollabratorRL
     {
-        Task<string> AddCollaboratorToNotes(CollbratorResponse collaborator,long UserId,long NoteId);
+        public CollbratorModel AddCollaboratorToNotes(CollbratorResponse collaborator,long UserId,long NoteId);
         Task<string> DeleteCollaborator(long collbratorID);
         Task<List<Collaborator>> GetAllCollabarators();
     }

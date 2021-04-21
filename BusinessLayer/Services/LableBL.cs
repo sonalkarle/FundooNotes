@@ -27,11 +27,11 @@ namespace BusinessLayer.Services
         }
 
        
-        public LabaleResponse AddLabel(LabaleResponse labelModel,long UserId,long noteId)
+        public LableResponseModel AddLabel(LabaleResponse labelModel,long UserId,long noteId)
         {
             try
             {
-                LabaleResponse result = this.label.AddLabel(labelModel,UserId,noteId);
+                LableResponseModel result = this.label.AddLabel(labelModel,UserId,noteId);
                 return result;
             }
             catch (Exception exception)
@@ -81,16 +81,16 @@ namespace BusinessLayer.Services
                 throw new Exception(exception.Message);
             }
         }
-        public string UpdateLabel(long LableID, string name)
+        public LableResponseModel UpdateLabel(long LableID, string name)
         {
             try
             {
-                this.label.UpdateLabel(LableID, name);
-                return "Updated Successfully";
+                var result = this.label.UpdateLabel(LableID, name);
+                return result;
             }
-            catch (Exception exception)
+            catch (Exception )
             {
-                return exception.Message;
+                throw;
             }
         }
     }

@@ -32,7 +32,7 @@ namespace RepositoryLayer.Services
         /// <param name="collaborator">The collaborator.</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<string> AddCollaboratorToNotes(CollbratorResponse collaborator,long UserId,long NoteId)
+        public CollbratorModel AddCollaboratorToNotes(CollbratorResponse collaborator,long UserId,long NoteId)
         {
             try
             {
@@ -47,10 +47,19 @@ namespace RepositoryLayer.Services
                        
                         
                        };
-                    collbratorcontext.Collaborators.Add(addCollaborator);
+                   this.collbratorcontext.Collaborators.Add(addCollaborator);
                 }
-                await this.collbratorcontext.SaveChangesAsync();
-                return "Added successFully";
+                 this.collbratorcontext.SaveChangesAsync();
+                var col = collbratorcontext.Collaborators.FirstOrDefault(N => N.NoteId == NoteId && N.UserId == UserId);
+                CollbratorModel collbrator1 = new CollbratorModel
+                {
+                    CollaboratorId = col.CollaboratorId,
+                    CollaboratorEmail = col.CollaboratorEmail,
+                    NoteId = NoteId,
+                    UserId = UserId,
+
+                };
+                return collbrator1;
 
             }
             catch (Exception exception)
@@ -83,7 +92,7 @@ namespace RepositoryLayer.Services
         public async Task<List<Collaborator>> GetAllCollabarators()
         {
             await this.collbratorcontext.SaveChangesAsync();
-            return this.collbratorcontext.Collaborators.ToList();
+            return this.collbratorcontext.Collaborators.ToList<Collaborator>();
         }
     }
 }

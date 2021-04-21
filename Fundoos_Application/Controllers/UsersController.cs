@@ -3,6 +3,7 @@ using BusinessLayer.Services;
 using CommanLayer.ResponseModel;
 using CommonLayer.ResponseModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace Fundoos_Application.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+  //  [EnableCors("AllowOrigin")]
     public class UsersController : ControllerBase
     {
         IUserBL userBL;
@@ -117,7 +119,7 @@ namespace Fundoos_Application.Controllers
         /// </summary>
         /// <param name="resetPasswordModel"></param>
         /// <returns></returns>
-        [Authorize]
+       [Authorize]
         [HttpPost("Resetpassword")]
         public IActionResult ResetPassword(ResetPasswordModel reset)
         {

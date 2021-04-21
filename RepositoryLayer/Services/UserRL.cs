@@ -45,8 +45,8 @@ namespace RepositoryLayer.Services
                     DateOfBirth = user.DateOfBirth,
                     PhoneNumber = user.PhoneNumber,
                     Password = Password.ConvertToEncrypt(user.Password),
-                    Creationtime = user.Creationtime = DateTime.Now,
-                    Modificationtime = user.Modificationtime,
+                    Creationtime = DateTime.Now,
+                    Modificationtime = null,
                   
                 };
 

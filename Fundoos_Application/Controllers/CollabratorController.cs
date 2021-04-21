@@ -26,7 +26,7 @@ namespace Fundoos_Application.Controllers
 
         [HttpPost]
    
-        public async Task<IActionResult> AddColloborator(CollbratorResponse collaborator,long NoteId)
+        public IActionResult AddColloborator(CollbratorResponse collaborator,long NoteId)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Fundoos_Application.Controllers
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     string Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
-                    var result = await this.collaboratorBL.AddCollaborator(collaborator, UserID, NoteId);
+                    CollbratorModel result =  this.collaboratorBL.AddCollaboratorToNotes(collaborator, UserID, NoteId);
                     if (result != null)
                     {
                         return this.Ok(new { Message=result });

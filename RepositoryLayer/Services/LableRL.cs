@@ -3,12 +3,11 @@ using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RepositoryLayer.Services
 {
-   public  class LableRL :   ILableRL
+    public  class LableRL :   ILableRL
     {
 
         readonly FundooApiContext LablesDB;
@@ -20,7 +19,7 @@ namespace RepositoryLayer.Services
         }
 
 
-        public LabaleResponse AddLabel(LabaleResponse labelModel,long UserId,long noteID)
+        public LableResponseModel AddLabel(LabaleResponse labelModel,long UserId,long noteID)
         {
             try
             {
@@ -28,20 +27,21 @@ namespace RepositoryLayer.Services
                 LabaleTable label = new LabaleTable()
                 {
                     NoteId = noteID,
-                    LableId = (long)labelModel.LableId,
                     LableName = labelModel.LableName,
                     UserId =UserId
                 };
-                LabaleResponse label1 = new LabaleResponse()
+                this.LablesDB.LabaleTables.Add(label);
+                var result = this.LablesDB.SaveChanges();
+                var lable = LablesDB.LabaleTables.FirstOrDefault(N => N.NoteId == noteID && N.UserId == UserId);
+                LableResponseModel lable1 = new LableResponseModel()
                 {
                     NoteId = noteID,
-                    LableId = (long)labelModel.LableId,
+                    LableId = lable.LableId,
                     LableName = labelModel.LableName,
                     UserId = UserId
                 };
-                this.LablesDB.LabaleTables.Add(label);
-                var result = this.LablesDB.SaveChanges();
-                return label1;
+
+                return lable1;
             }
             catch (Exception ex)
             {
@@ -65,8 +65,9 @@ namespace RepositoryLayer.Services
         }
         public async Task<List<LabaleTable>> GetAllLabels()
         {
+          
             await this.LablesDB.SaveChangesAsync();
-            return this.LablesDB.LabaleTables.ToList<LabaleTable>();
+           return this.LablesDB.LabaleTables.ToList<LabaleTable>();
         }
 
         public List<LabaleTable> GetLabel(long LableId)
@@ -79,14 +80,21 @@ namespace RepositoryLayer.Services
             return null;
         }
 
-        public string UpdateLabel(long LableId, string name)
+        public LableResponseModel UpdateLabel(long LableId, string name)
         {
             var result = this.LablesDB.LabaleTables.Where(op => op.LableId == LableId).SingleOrDefault();
             if (result != null)
             {
                 result.LableName = name;
                 var res = this.LablesDB.SaveChanges();
-                return "Updated Successfully";
+                LableResponseModel lable1 = new LableResponseModel()
+                {
+                    NoteId =(long) result.NoteId,
+                    LableId = LableId,
+                    LableName = result.LableName,
+                    UserId = (long)result.UserId
+                };
+                return lable1;
             }
             return default;
         }

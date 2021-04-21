@@ -37,7 +37,7 @@ namespace Fundoos_Application.Controllers
                     IEnumerable<Claim> claims = identity.Claims;
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     string Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
-                    LabaleResponse result = this.labelManagementBL.AddLabel(labelModel,UserID, noteId);
+                    LableResponseModel result = this.labelManagementBL.AddLabel(labelModel,UserID, noteId);
                     return Ok(new { success = true,Data = result });
                 }
                 return this.Ok(new { Message = "Bad request" });

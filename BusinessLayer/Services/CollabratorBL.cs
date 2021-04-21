@@ -4,6 +4,8 @@ using RepositoryLayer;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Caching.Distributed;
+using BusinessLayer.RedisCacheService;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,18 +13,24 @@ namespace BusinessLayer.Services
 {
     public class CollabratorBL : IcollabatorBL
     {
+        private readonly IDistributedCache distributedCache;
         private readonly IcollabratorRL icollabratorRL;
-        public CollabratorBL (IcollabratorRL icollabratorRL)
+        RedisCacheServiceBL redis;
+        public CollabratorBL (IcollabratorRL icollabratorRL, IDistributedCache distributedCache)
         {
             this.icollabratorRL = icollabratorRL;
+            this.distributedCache = distributedCache;
+            redis = new RedisCacheServiceBL(this.distributedCache);
         }
 
-        public async Task<string> AddCollaborator(CollbratorResponse collaborator,long UserId,long noteId)
+        public CollbratorModel AddCollaboratorToNotes(CollbratorResponse collaborator, long UserId, long NoteId)
         {
 
             try
             {
-                return await this.icollabratorRL.AddCollaboratorToNotes(collaborator, UserId, noteId);
+
+               var result =  this.icollabratorRL.AddCollaboratorToNotes(collaborator, UserId, NoteId);
+                return result;
               
             }
             catch (Exception exception)

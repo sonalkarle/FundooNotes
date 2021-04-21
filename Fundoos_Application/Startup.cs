@@ -34,6 +34,10 @@ namespace Fundoos_Application
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            });
             services.AddControllers();
             services.AddScoped<IUserRL, UserRL>();
             services.AddScoped<IUserBL, UserBL>();
@@ -43,6 +47,7 @@ namespace Fundoos_Application
             services.AddScoped<ILableBL, LableBL>();
             services.AddScoped<IcollabratorRL, CollabratorRL>();
             services.AddScoped<IcollabatorBL, CollabratorBL>();
+           
             // Enable Swagger   
             services.AddSwaggerGen(swagger =>
             {
@@ -120,7 +125,9 @@ namespace Fundoos_Application
                // c.RoutePrefix = string.Empty;
             });
 
-            
+
+            app.UseCors(options => options.AllowAnyOrigin());
+
 
 
             app.UseHttpsRedirection();
@@ -128,6 +135,7 @@ namespace Fundoos_Application
             app.UseAuthentication();
 
             app.UseRouting();
+
 
             app.UseAuthorization();
 

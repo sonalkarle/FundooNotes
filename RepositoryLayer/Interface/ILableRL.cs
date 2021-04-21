@@ -8,8 +8,8 @@ namespace RepositoryLayer.Interface
 {
    public interface ILableRL
     {
-        LabaleResponse AddLabel(LabaleResponse labelModel,long UserId,long noteId);
-        string UpdateLabel(long LableId, string name);
+        LableResponseModel AddLabel(LabaleResponse labelModel,long UserId,long noteId);
+        LableResponseModel UpdateLabel(long LableId, string name);
         string DeleteLabel(long LableId);
         Task<List<LabaleTable>> GetAllLabels();
         List<LabaleTable> GetLabel(long id);

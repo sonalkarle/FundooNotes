@@ -9,7 +9,7 @@ namespace BusinessLayer.Interface
 {
    public  interface IcollabatorBL
     {
-        Task<string> AddCollaborator(CollbratorResponse collaborator,long UserId,long noteId);
+        public CollbratorModel AddCollaboratorToNotes(CollbratorResponse collaborator, long UserId, long NoteId);
         Task<string> DeleteCollaborator(long collbratorID);
 
         Task<List<Collaborator>> GetAllCollabarators();
