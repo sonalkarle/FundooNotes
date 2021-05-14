@@ -28,7 +28,7 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                responseNoteModels = notesContext.Notes.Where(N => N.UserId.Equals(UserID)).OrderBy(N => N.CreatedOn).Select(N =>
+                responseNoteModels = notesContext.Notes.Where(N => N.UserId.Equals(UserID) && N.IsTrash == false).OrderBy(N => N.CreatedOn).Select(N =>
                   new ResponseNoteModel
                   {
                       UserID = (long)N.UserId,
@@ -66,6 +66,8 @@ namespace RepositoryLayer.Services
                     if (note.IsTrash == true)
                     {
                         notesContext.Entry(note).State = EntityState.Deleted;
+                        notesContext.SaveChanges();
+
                         return null;
                     }
                     else
@@ -283,38 +285,52 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        public async Task<ResponseNoteModel> UpdateNote(ResponseNoteModel Note,long UserId, long NoteID)
+        public ResponseNoteModel UpdateNote(ResponseNoteModel Note)
         {
             try
             {
-
-                var UpdateNote = notesContext.Notes.FirstOrDefault(N => N.NoteId == NoteID && N.UserId == UserId);
+                
+                var UpdateNote = notesContext.Notes.FirstOrDefault(N => N.NoteId == Note.NoteId && N.UserId == Note.UserID);
                 if (UpdateNote != null)
                 {
-                  
                     UpdateNote.Title = Note.Title;
                     UpdateNote.Body = Note.Body;
+                    UpdateNote.Reminder = Note.Reminder;
+                    UpdateNote.Color = Note.Color;
+                    UpdateNote.Image = Note.Image;
+                    UpdateNote.IsArchieve = Note.isArchieve;
+                    UpdateNote.IsPin = Note.isPin;
+                    UpdateNote.IsTrash = Note.isTrash;
+                    UpdateNote.CreatedOn = Note.CreateonTime;
                     UpdateNote.ModificaionTime = DateTime.Now;
-                };
-                ResponseNoteModel NewNote = new ResponseNoteModel
-                {
-                    UserID = (long)UpdateNote.UserId,
-                    NoteId = UpdateNote.NoteId,
-                    Title = UpdateNote.Title,
-                    Body = UpdateNote.Body,
-                    Color = UpdateNote.Color,
-                    Image = UpdateNote.Image,
-                    Reminder = (DateTime)UpdateNote.Reminder,
-                    isPin = (bool)UpdateNote.IsPin,
-                    isArchieve = (bool)UpdateNote.IsArchieve,
-                    isTrash = (bool)UpdateNote.IsTrash,
+                }
+                notesContext.SaveChanges();
+                var NewResponseNote = notesContext.Notes.Where(N => N.NoteId == Note.NoteId).Select(N =>
+                   new ResponseNoteModel
+                   {
+                       UserID = (long)N.UserId,
+                       NoteId = N.NoteId,
+                       Title = N.Title,
+                       Body = N.Body,
+                       Color = N.Color,
 
-                };
+                       Image = N.Image,
+                       Reminder = (DateTime)N.Reminder,
+                       isPin = (bool)N.IsPin,
+                       isArchieve = (bool)N.IsArchieve,
 
-                await this.notesContext.SaveChangesAsync();
-                return NewNote;
+                       isTrash = (bool)N.IsTrash,
+                       CreateonTime = (DateTime)N.CreatedOn,
+                       ModificationTime = (DateTime)N.ModificaionTime,
+                      
+                      
+                 
+                 
+                   }
+                   ).ToList().First();
+                return NewResponseNote;
 
-       
+
             }
             catch(Exception)
             {
@@ -340,6 +356,8 @@ namespace RepositoryLayer.Services
                     IsPin = note.isPin,
                     IsArchieve = note.isArchieve,
                     IsTrash = note.isTrash,
+                    CreatedOn = DateTime.Now,
+                    ModificaionTime = null,
 
                 };
                 notesContext.Notes.Add(NewNote);

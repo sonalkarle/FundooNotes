@@ -153,20 +153,23 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<ResponseNoteModel> UpdateNote(ResponseNoteModel note,long UserId,long NoteId)
+        public async Task<ResponseNoteModel> UpdateNote(ResponseNoteModel note)
         {
             try
             {
-                
-               var result=  await notesRL.UpdateNote(note,UserId,NoteId);
-                return result;
+                await redis.RemoveNotesRedisCache(note.UserID);
+              
+                if (note.isTrash || note.isArchieve)
+                {
+                    note.isPin = false;
+                }
+                return notesRL.UpdateNote(note);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
         public async Task<NoteReminder> SetNoteReminder(NoteReminder reminder,long UserId,long NoteId )
         {
             try

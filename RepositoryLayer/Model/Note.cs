@@ -7,6 +7,8 @@ namespace RepositoryLayer
 {
     public partial class Note
     {
+        internal bool isPin;
+
         public Note()
         {
             Collaborators = new HashSet<Collaborator>();

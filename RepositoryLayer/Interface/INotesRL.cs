@@ -27,7 +27,7 @@ namespace RepositoryLayer.Interface
         Task<ResponseNoteModel> ChangeColor(long UserID, string color, long noteID);
         Task<NoteReminder> SetNoteReminder(NoteReminder reminder, long UserID, long NoteID);
         Task<string> DeleteNoteReminder(long UserID, long NoteID);
-        Task<ResponseNoteModel> UpdateNote(ResponseNoteModel Note,long UserId, long NoteID);
+        ResponseNoteModel UpdateNote(ResponseNoteModel note);
 
 
 

@@ -61,6 +61,28 @@ namespace Fundoos_Application.Controllers
                 return BadRequest(new { success = false, exception.InnerException });
             }
         }
+
+        [HttpPut("Update")]
+        public IActionResult UpdateNote(ResponseNoteModel Note)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
+                    Note.UserID = UserID;
+                    ResponseNoteModel result = notesBL.UpdateNote(Note).Result;
+                    return Ok(new { success = true, Message = "note updated", Note = result });
+                }
+                return BadRequest(new { success = false, Message = "no user is active please login" });
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(new { success = false, exception.Message });
+            }
+        }
         /// <summary>
         /// Add new node to the database
         /// </summary>
@@ -244,8 +266,8 @@ namespace Fundoos_Application.Controllers
         */
         
 
-        [HttpDelete]
-        public IActionResult DeleteNote(long noteID)
+        [HttpDelete("{noteId}")]
+        public IActionResult DeleteNote(long noteId)
         {
             try
             {
@@ -255,7 +277,7 @@ namespace Fundoos_Application.Controllers
                     long UserID = Convert.ToInt64(claims.Where(p => p.Type == "UserId").FirstOrDefault()?.Value);
                     string Email = claims.Where(p => p.Type == "Email").FirstOrDefault()?.Value;
 
-                    ResponseNoteModel result = notesBL.DeleteNote(UserID,noteID).Result;
+                    ResponseNoteModel result = notesBL.DeleteNote(UserID, noteId).Result;
                     if (result == null)
                     {
                         return Ok(new { success = true, user = Email, Message = "Note deleted sucessfully", Note = result });

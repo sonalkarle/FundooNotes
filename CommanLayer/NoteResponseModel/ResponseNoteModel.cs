@@ -22,12 +22,7 @@ namespace CommanLayer.ResponseModel
 
         public ICollection<string> Collaborators { get; set; }
 
-        public ResponseNoteModel()
-        {
-            this.CreateonTime = DateTime.Now;
-            this.ModificationTime = DateTime.Now;
-        }
-
+       
 
 
 

@@ -22,8 +22,7 @@ namespace BusinessLayer.Interface
 
         Task<string> DeleteNoteReminder( long UserId, long NoteId);
         Task<NoteReminder> SetNoteReminder(NoteReminder reminder, long UserId, long NoteId);
-        Task<ResponseNoteModel> UpdateNote(ResponseNoteModel note, long UserId, long NoteId);
-
+        Task<ResponseNoteModel> UpdateNote(ResponseNoteModel note);
 
 
 
